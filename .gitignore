@@ -1,3 +1,6 @@
+# Ignore the entire folder of all the things that were done and tested
+/DO_NOT_TRACK_THIS_FOLDER
+
 # Prerequisites
 *.d
 
