@@ -38,10 +38,9 @@ body:
     id: course
     attributes:
       label: Course link
-      description: Which course topic this practices, if any.
+      description: Which course topic this practices, if any. Leave empty if none.
       multiple: true
       options:
-        - None
         - IN5700 Fog and Cloud Computing
         - IN5020 Distributed Systems
         - TEK5520 Cybersecurity in Industrial Systems
