@@ -1,5 +1,5 @@
 // Package model holds the domain types that are shared by all ZTC services:
-// The continuum layers, device classes, and the access request / decision pair
+// the continuum layers, device classes, and the access request / decision pair
 // that flows between a Policy Enforcement Point (PEP) and a Policy Decision Point (PDP).
 //
 // Keeping these types in one small package with no dependencies avoids import cycles between policy, trust, pdp and pep.
