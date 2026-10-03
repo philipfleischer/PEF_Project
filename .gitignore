@@ -1,6 +1,16 @@
 # Ignore the entire folder of all the things that were done and tested
 /DO_NOT_TRACK_THIS_FOLDER
 
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+desktop.ini
+
 # Prerequisites
 *.d
 
@@ -70,6 +80,3 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
-
-# Other mac files
-.DS_Store
