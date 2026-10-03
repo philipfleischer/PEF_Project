@@ -1,0 +1,25 @@
+# EditorConfig: one formatting baseline for every editor. https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# gofmt uses tabs
+[*.go]
+indent_style = tab
+
+# make requires a tab before every recipe line
+[{Makefile,*.mk}]
+indent_style = tab
+
+[*.{yml,yaml,json,tf,tftpl,hcl,sh}]
+indent_size = 2
+
+# two trailing spaces are a line break in Markdown
+[*.md]
+trim_trailing_whitespace = false
