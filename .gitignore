@@ -111,3 +111,6 @@ demo-logs/
 .idea/
 .vscode/
 *.swo
+
+# Personal Claude Code context (CLAUDE.md is shared, this one is not)
+CLAUDE.local.md
