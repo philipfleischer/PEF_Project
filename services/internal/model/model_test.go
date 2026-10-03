@@ -53,3 +53,25 @@ func TestDistance(t *testing.T) {
 		}
 	}
 }
+
+// TEST
+
+func TestDecisionAllowedFailsClosed(t *testing.T) {
+	tests := []struct {
+		name string
+		d    Decision
+		want bool
+	}{
+		{"explicit allow", Decision{Effect: Allow}, true},
+		{"explicit deny", Decision{Effect: Deny}, false},
+		{"zero value", Decision{}, false},
+		{"unknown effect", Decision{Effect: "maybe"}, false},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := tc.d.Allowed(); got != tc.want {
+				t.Errorf("Allowed() = %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
