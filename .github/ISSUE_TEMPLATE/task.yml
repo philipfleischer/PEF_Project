@@ -1,0 +1,53 @@
+name: Task
+description: A unit of planned work. Usually one issue = one branch = one pull request.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Create one branch for this issue and link the pull request with `Closes #<issue number>`.
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should exist or work when this is done, and why.
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Tasks
+      description: The planned steps or commits, as a checklist.
+      value: |
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How to check that it is done. Commands and the expected result.
+      value: |
+        - [ ]
+    validations:
+      required: true
+
+  - type: dropdown
+    id: course
+    attributes:
+      label: Course link
+      description: Which course topic this practices, if any.
+      multiple: true
+      options:
+        - None
+        - IN5700 Fog and Cloud Computing
+        - IN5020 Distributed Systems
+        - TEK5520 Cybersecurity in Industrial Systems
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: References, design decisions, links to ADRs or the reference implementation.
