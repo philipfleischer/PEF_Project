@@ -17,26 +17,26 @@ import (
 	"sync"
 )
 
-// The metric interface is implemented by every metric type so the
-// registry can render them without knowing which kind each one is.
+// metric is implemented by every metric type so the registry can render them
+// without knowing which kind each one is.
 type metric interface {
 	writeTo(b *strings.Builder)
 }
 
-// The Registry structure holds the metrics of one service. It is safe for concurrent use.
+// Registry holds the metrics of one service. It is safe for concurrent use.
 type Registry struct {
 	mu      sync.Mutex
 	metrics map[string]metric
 }
 
-// NewRegistry simply returns an empty registry.
+// NewRegistry returns an empty registry.
 func NewRegistry() *Registry {
 	return &Registry{metrics: map[string]metric{}}
 }
 
-// The register function returns the metric called name, creating it
-// with create if it does not exist yet. Registering the same name as
-// two different kinds of metric is a programming error, so it panics.
+// register returns the metric called name, creating it with create if it does
+// not exist yet. Registering the same name as two different kinds of metric
+// is a programming error, so it panics.
 func register[M metric](r *Registry, name string, create func() M) M {
 	r.mu.Lock()
 	defer r.mu.Unlock()
