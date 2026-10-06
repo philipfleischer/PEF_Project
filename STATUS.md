@@ -8,7 +8,7 @@ Legend: ✅ implemented and tested · 🟡 works, known gaps · 🔴 not started
 
 | Milestone | Content | Status |
 | --- | --- | --- |
-| M0 Foundation | repo hygiene, Go service skeleton, CI | 🟡 in progress |
+| M0 Foundation | repo hygiene, Go service skeleton, CI | ✅ in progress |
 | M1 Decision chain | policy, trust, PDP, tokens, PEP | 🔴 |
 | M2 Fog, IDS and demo | telemetry, edge devices, fog node, IDS, audit, e2e demo | 🔴 |
 | M3 Distributed systems | clocks, Raft, SWIM, Chord | 🔴 |
@@ -26,7 +26,7 @@ Legend: ✅ implemented and tested · 🟡 works, known gaps · 🔴 not started
 | OMNeT++ model | `sim/omnetpp/` | 🔴 | |
 | Analytics | `analytics/` | 🔴 | |
 | Deployment | `deploy/` | 🔴 | |
-| CI/CD | `.github/workflows/` | 🔴 | |
+| CI/CD | `.github/workflows/` | ✅ | build, race tests with coverage, golangci-lint, actionlint, Dependabot |
 | Docs | `Docs/` | 🔴 | |
 
 ## Go packages
@@ -47,3 +47,4 @@ Legend: ✅ implemented and tested · 🟡 works, known gaps · 🔴 not started
 | `.gitignore` (Go, Python, C++, OMNeT++, Terraform, OS, editors) | ✅ |
 | `LICENSE` (MIT), `.editorconfig` | ✅ |
 | `STATUS.md`, `CLAUDE.md` | ✅ |
+| `Makefile`, `.golangci.yml`, CI workflow, Dependabot | ✅ |
