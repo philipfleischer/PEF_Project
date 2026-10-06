@@ -56,7 +56,7 @@ func ParseLayer(s string) (Layer, error) {
 
 // Distance returns how many layer hops separate a and b (0, 1 or 2).
 func Distance(a, b Layer) int {
-	d := int(a) - int(b)
+	d := int(a)   -   int(b)
 	if d < 0 {
 		d = -d
 	}
