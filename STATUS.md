@@ -21,13 +21,24 @@ Legend: ✅ implemented and tested · 🟡 works, known gaps · 🔴 not started
 
 | Part | Path | Status | Notes |
 | --- | --- | --- | --- |
-| Go services | `services/` | 🔴 | |
+| Go services | `services/` | 🟡 | Skeleton: `model`, `config`, `httpx`, `observability`, `svc`; `ztc-pdp`, serves health and metrics only |
 | C++ simulation core | `sim/core/` | 🔴 | |
 | OMNeT++ model | `sim/omnetpp/` | 🔴 | |
 | Analytics | `analytics/` | 🔴 | |
 | Deployment | `deploy/` | 🔴 | |
 | CI/CD | `.github/workflows/` | 🔴 | |
 | Docs | `Docs/` | 🔴 | |
+
+## Go packages
+
+| Package | Status | Notes |
+| --- | --- | --- |
+| `internal/model` | ✅ | layers, device classes, access request and decision (fail closed) |
+| `internal/config` | ✅ | `ZTC_` env vars, invalid values reported through `Err()` |
+| `internal/httpx` | ✅ | strict JSON decoding, server timeouts, graceful shutdown |
+| `internal/observability` | ✅ | Prometheus exposition, `/healthz`, `/readyz`, RED metrics, JSON logs |
+| `internal/svc` | ✅ | shared start-up: config, logger, metrics, fail-fast serve |
+| `cmd/ztc-pdp` | 🟡 | runs; decision API comes in M1 |
 
 ## Repository basics
 
