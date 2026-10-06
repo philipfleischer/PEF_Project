@@ -1,0 +1,63 @@
+# CI: build, lint and test the Go services on every pull request and every
+# push to main. The job names are the status checks that branch protection
+# requires before a pull request can be merged.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  go:
+    name: go
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: stable
+          cache-dependency-path: services/go.mod
+      - name: gofmt and go vet
+        run: |
+          test -z "$(gofmt -l services)" || { echo "Files need gofmt:"; gofmt -l services; exit 1; }
+          cd services && go vet ./...
+      - name: Build
+        run: make build
+      - name: Test with race detector and coverage
+        run: make cover
+      - name: Upload coverage
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: services/coverage.out
+
+  golangci-lint:
+    name: golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: stable
+          cache-dependency-path: services/go.mod
+      - uses: golangci/golangci-lint-action@v9
+        with:
+          version: latest
+          working-directory: services
+
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker://rhysd/actionlint:1.7.12
+        with:
+          args: -color
