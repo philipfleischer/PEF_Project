@@ -1,0 +1,29 @@
+# golangci-lint configuration: https://golangci-lint.run/usage/configuration/
+version: "2"
+
+linters:
+  # errcheck, govet, ineffassign, staticcheck and unused
+  default: standard
+  enable:
+    - bodyclose # HTTP response bodies are closed
+    - errorlint # errors are compared with errors.Is/As, not ==
+    - gocritic # common bugs and style issues, e.g. os.Exit after defer
+    - gosec # security problems: weak crypto, TLS settings, file permissions
+    - misspell # common spelling mistakes in comments and strings
+    - revive # Go style rules, configured below
+    - unconvert # unnecessary type conversions
+  settings:
+    revive:
+      rules:
+        - name: exported # doc comments on exported names start with the name
+        - name: package-comments
+        - name: var-naming # ID, URL and HTTP stay upper-case in names
+        - name: error-strings # error messages are lower-case without punctuation
+        - name: error-naming # error variables are called errFoo / ErrFoo
+        - name: receiver-naming # one consistent receiver name per type
+        - name: indent-error-flow # no else after a return
+        - name: context-as-argument # ctx is the first parameter
+
+formatters:
+  enable:
+    - gofmt
