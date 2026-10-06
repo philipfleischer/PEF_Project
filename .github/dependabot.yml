@@ -1,0 +1,18 @@
+# Dependabot opens pull requests when a newer version of a GitHub Action or a Go module is released.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    labels: ["type: ci"]
+
+  - package-ecosystem: gomod
+    directory: /services
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build
+    labels: ["type: build"]

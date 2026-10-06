@@ -1,5 +1,7 @@
 # ZTC — Zero-Trust Continuum
 
+[![ci](https://github.com/philipfleischer/zero-trust-continuum/actions/workflows/ci.yml/badge.svg)](https://github.com/philipfleischer/zero-trust-continuum/actions/workflows/ci.yml)
+
 A zero-trust security architecture for the edge-fog-cloud continuum, applied to critical energy infrastructure (smart-grid substations).
 
 ZTC is a long-running research and engineering project by Philip Elias Fleischer (MSc Informatics: Programming and System Architecture, UiO). It serves three purposes at once:
