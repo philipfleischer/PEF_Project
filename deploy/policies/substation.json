@@ -1,0 +1,334 @@
+{
+  "version": 1,
+  "description": "digital substation baseline (IEC 62443 zones, Purdue levels, least privilege)",
+  "rules": [
+    {
+      "id": "deny-untrusted",
+      "description": "zero trust floor",
+      "effect": "deny",
+      "conditions": [
+        {
+          "attr": "context.trustScore",
+          "op": "lt",
+          "value": "0.3"
+        }
+      ],
+      "ttlSeconds": 5
+    },
+    {
+      "id": "auditor-read-only",
+      "description": "auditors observe, they never act",
+      "effect": "deny",
+      "subjects": [
+        "role:auditor"
+      ],
+      "conditions": [
+        {
+          "attr": "action",
+          "op": "neq",
+          "value": "read"
+        }
+      ],
+      "ttlSeconds": 60
+    },
+    {
+      "id": "edge-write-telemetry",
+      "description": "sensors report to their own zone",
+      "effect": "allow",
+      "resources": [
+        "type:telemetry"
+      ],
+      "actions": [
+        "write"
+      ],
+      "conditions": [
+        {
+          "attr": "subject.layer",
+          "op": "eq",
+          "value": "edge"
+        },
+        {
+          "attr": "subject.zone",
+          "op": "sameAs",
+          "value": "resource.zone"
+        }
+      ],
+      "obligations": [
+        "rate-limit:50/s"
+      ],
+      "ttlSeconds": 60
+    },
+    {
+      "id": "fog-read-telemetry",
+      "description": "fog services process their own zone",
+      "effect": "allow",
+      "resources": [
+        "type:telemetry"
+      ],
+      "actions": [
+        "read"
+      ],
+      "conditions": [
+        {
+          "attr": "subject.layer",
+          "op": "eq",
+          "value": "fog"
+        },
+        {
+          "attr": "subject.zone",
+          "op": "sameAs",
+          "value": "resource.zone"
+        },
+        {
+          "attr": "context.trustScore",
+          "op": "gte",
+          "value": "0.5"
+        }
+      ],
+      "ttlSeconds": 60
+    },
+    {
+      "id": "operate-breaker",
+      "description": "switching needs high trust from a control zone",
+      "effect": "allow",
+      "subjects": [
+        "role:operator"
+      ],
+      "resources": [
+        "type:breaker"
+      ],
+      "actions": [
+        "operate"
+      ],
+      "conditions": [
+        {
+          "attr": "context.trustScore",
+          "op": "gte",
+          "value": "0.8"
+        },
+        {
+          "attr": "context.sourceZone",
+          "op": "in",
+          "value": "control-centre,substation-hmi"
+        }
+      ],
+      "obligations": [
+        "log",
+        "reverify:10s"
+      ],
+      "ttlSeconds": 10
+    },
+    {
+      "id": "break-glass-breaker",
+      "description": "emergency switching, always alerted",
+      "effect": "allow",
+      "subjects": [
+        "role:operator"
+      ],
+      "resources": [
+        "type:breaker"
+      ],
+      "actions": [
+        "operate"
+      ],
+      "conditions": [
+        {
+          "attr": "context.emergency",
+          "op": "eq",
+          "value": "true"
+        },
+        {
+          "attr": "context.trustScore",
+          "op": "gte",
+          "value": "0.5"
+        }
+      ],
+      "obligations": [
+        "log",
+        "alert:soc"
+      ],
+      "ttlSeconds": 1
+    },
+    {
+      "id": "write-setpoint",
+      "description": "engineers tune protection settings",
+      "effect": "allow",
+      "subjects": [
+        "role:engineer"
+      ],
+      "resources": [
+        "type:setpoint"
+      ],
+      "actions": [
+        "write"
+      ],
+      "conditions": [
+        {
+          "attr": "context.trustScore",
+          "op": "gte",
+          "value": "0.7"
+        }
+      ],
+      "obligations": [
+        "log"
+      ],
+      "ttlSeconds": 10
+    },
+    {
+      "id": "auditor-read",
+      "description": "auditors read across zones",
+      "effect": "allow",
+      "subjects": [
+        "role:auditor"
+      ],
+      "resources": [
+        "type:telemetry",
+        "type:telemetry-aggregate",
+        "type:policy",
+        "type:audit-log"
+      ],
+      "actions": [
+        "read"
+      ],
+      "conditions": [
+        {
+          "attr": "context.trustScore",
+          "op": "gte",
+          "value": "0.5"
+        }
+      ],
+      "obligations": [
+        "log"
+      ],
+      "ttlSeconds": 60
+    },
+    {
+      "id": "cloud-read-aggregates",
+      "description": "analytics sees aggregates, not raw data",
+      "effect": "allow",
+      "resources": [
+        "type:telemetry-aggregate"
+      ],
+      "actions": [
+        "read"
+      ],
+      "conditions": [
+        {
+          "attr": "subject.layer",
+          "op": "eq",
+          "value": "cloud"
+        },
+        {
+          "attr": "context.trustScore",
+          "op": "gte",
+          "value": "0.5"
+        }
+      ],
+      "ttlSeconds": 60
+    },
+    {
+      "id": "execute-task",
+      "description": "offloading to fog and cloud",
+      "effect": "allow",
+      "resources": [
+        "type:task"
+      ],
+      "actions": [
+        "execute"
+      ],
+      "conditions": [
+        {
+          "attr": "subject.layer",
+          "op": "in",
+          "value": "fog,cloud"
+        },
+        {
+          "attr": "context.trustScore",
+          "op": "gte",
+          "value": "0.5"
+        }
+      ],
+      "ttlSeconds": 30
+    },
+    {
+      "id": "edge-offload-task",
+      "description": "edge devices run tasks in their own zone",
+      "effect": "allow",
+      "resources": [
+        "type:task"
+      ],
+      "actions": [
+        "execute"
+      ],
+      "conditions": [
+        {
+          "attr": "subject.layer",
+          "op": "eq",
+          "value": "edge"
+        },
+        {
+          "attr": "subject.zone",
+          "op": "sameAs",
+          "value": "resource.zone"
+        },
+        {
+          "attr": "context.trustScore",
+          "op": "gte",
+          "value": "0.5"
+        }
+      ],
+      "ttlSeconds": 30
+    },
+    {
+      "id": "migrate-service",
+      "description": "moving services between nodes",
+      "effect": "allow",
+      "resources": [
+        "type:service"
+      ],
+      "actions": [
+        "migrate"
+      ],
+      "conditions": [
+        {
+          "attr": "subject.layer",
+          "op": "in",
+          "value": "fog,cloud"
+        },
+        {
+          "attr": "context.trustScore",
+          "op": "gte",
+          "value": "0.7"
+        }
+      ],
+      "ttlSeconds": 10
+    },
+    {
+      "id": "policy-admin",
+      "description": "only cloud admins change the policy",
+      "effect": "allow",
+      "subjects": [
+        "spiffe://*/cloud/admin/*"
+      ],
+      "resources": [
+        "type:policy"
+      ],
+      "actions": [
+        "admin",
+        "read",
+        "write"
+      ],
+      "conditions": [
+        {
+          "attr": "context.trustScore",
+          "op": "gte",
+          "value": "0.8"
+        }
+      ],
+      "obligations": [
+        "log"
+      ],
+      "ttlSeconds": 5
+    }
+  ]
+}
