@@ -69,9 +69,9 @@ var validOps = map[string]bool{
 }
 
 // Validate reports the first mistake in p: a nil policy, an empty or duplicate
-// rule ID, an effect other than allow or deny, a negative TTL or an unknown
-// condition operator. A policy that does not validate must never be installed
-// (fail closed).
+// rule ID, an effect other than allow or deny, a negative TTL, or a condition
+// with an unknown attribute or operator. A policy that does not validate must
+// never be installed (fail closed).
 func Validate(p *Policy) error {
 	if p == nil {
 		return errors.New("policy: nil policy")
@@ -93,9 +93,14 @@ func Validate(p *Policy) error {
 			return fmt.Errorf("policy: rule %q: negative ttlSeconds %d", r.ID, r.TTLSeconds)
 		}
 		for _, c := range r.Conditions {
-			// TODO(ztc): reject unknown attribute names once KnownAttribute exists.
+			if !KnownAttribute(c.Attribute) {
+				return fmt.Errorf("policy: rule %q: unknown attribute %q", r.ID, c.Attribute)
+			}
 			if !validOps[c.Op] {
 				return fmt.Errorf("policy: rule %q: unknown op %q", r.ID, c.Op)
+			}
+			if c.Op == "sameAs" && !KnownAttribute(c.Value) {
+				return fmt.Errorf("policy: rule %q: sameAs refers to unknown attribute %q", r.ID, c.Value)
 			}
 		}
 	}

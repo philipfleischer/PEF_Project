@@ -38,6 +38,8 @@ func TestValidate(t *testing.T) {
 		{"empty effect", func(p *Policy) { p.Rules[0].Effect = "" }, "unknown effect"},
 		{"negative ttl", func(p *Policy) { p.Rules[1].TTLSeconds = -1 }, "negative ttlSeconds"},
 		{"unknown op", func(p *Policy) { p.Rules[0].Conditions[0].Op = "approx" }, "unknown op"},
+		{"unknown attribute", func(p *Policy) { p.Rules[0].Conditions[0].Attribute = "context.trustscore" }, "unknown attribute"},
+		{"sameAs unknown attribute", func(p *Policy) { p.Rules[1].Conditions[0].Value = "resource.zon" }, "unknown attribute"},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
