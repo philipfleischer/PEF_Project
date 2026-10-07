@@ -70,7 +70,8 @@ var validOps = map[string]bool{
 
 // Validate reports the first mistake in p: a nil policy, an empty or duplicate
 // rule ID, an effect other than allow or deny, a negative TTL, or a condition
-// with an unknown attribute or operator. A policy that does not validate must
+// with an unknown attribute or operator, a numeric operator without a number,
+// or sameAs naming an unknown attribute. A policy that does not validate must
 // never be installed (fail closed).
 func Validate(p *Policy) error {
 	if p == nil {
@@ -98,6 +99,11 @@ func Validate(p *Policy) error {
 			}
 			if !validOps[c.Op] {
 				return fmt.Errorf("policy: rule %q: unknown op %q", r.ID, c.Op)
+			}
+			if isNumericOp(c.Op) {
+				if _, err := parseNumber(c.Value); err != nil {
+					return fmt.Errorf("policy: rule %q: %s needs a number, got %q", r.ID, c.Op, c.Value)
+				}
 			}
 			if c.Op == "sameAs" && !KnownAttribute(c.Value) {
 				return fmt.Errorf("policy: rule %q: sameAs refers to unknown attribute %q", r.ID, c.Value)
