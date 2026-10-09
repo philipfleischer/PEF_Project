@@ -59,6 +59,14 @@ func TestStoreScoreFollowsTheClock(t *testing.T) {
 	}
 }
 
+func TestStoreNow(t *testing.T) {
+	now := t0
+	s := fixedClock(&now)
+	if got := s.Now(); !got.Equal(t0) {
+		t.Errorf("Now() = %v, want %v", got, t0)
+	}
+}
+
 func TestStoreDenialOfUnknownSubject(t *testing.T) {
 	s := NewStore(nil)
 	record(t, s, Signal{Subject: "spiffe://grid.example/edge/attacker", Kind: Denial})

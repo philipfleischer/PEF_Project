@@ -37,6 +37,14 @@ func (s *Store) SetClock(now func() time.Time) {
 	s.now = now
 }
 
+// Now returns the time on the store's clock,
+// so a caller can use the same clock for a whole decision.
+func (s *Store) Now() time.Time {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.now()
+}
+
 // Record applies sig to the state of its subject. A signal without a time is
 // stamped with the store's clock. A signal without a subject or with an
 // unknown kind is rejected and changes nothing.
