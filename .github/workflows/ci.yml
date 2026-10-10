@@ -58,6 +58,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: docker://rhysd/actionlint:1.7.12
+      - uses: actions/setup-go@v7
         with:
-          args: -color
+          go-version: stable
+          cache-dependency-path: services/go.mod
+      # Built from the Go module proxy, not pulled from Docker Hub, whose
+      # unauthenticated rate limit is shared by every GitHub-hosted runner.
+      - name: Install actionlint
+        run: go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+      - name: Run actionlint
+        run: actionlint -color
