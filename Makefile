@@ -8,7 +8,7 @@ BIN := $(CURDIR)/bin
 
 .PHONY: help
 help: ## List the targets
-	@grep -hE '^[a-zA-Z0-9_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
+	@grep -hE '^[a-zA-Z0-9_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: build
 build: ## Build every Go service into ./bin
@@ -32,6 +32,11 @@ lint: ## Check formatting, then run go vet and golangci-lint
 .PHONY: fmt
 fmt: ## Format all Go code
 	gofmt -w services
+
+.PHONY: policy-json
+policy-json: build ## Regenerate deploy/policies/substation.json from the built-in policy
+	$(BIN)/ztcctl policy default > deploy/policies/substation.json.tmp
+	mv deploy/policies/substation.json.tmp deploy/policies/substation.json
 
 .PHONY: run-pdp
 run-pdp: build ## Build and start ztc-pdp on :8181
