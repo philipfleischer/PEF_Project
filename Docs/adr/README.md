@@ -12,3 +12,4 @@ Rules:
 | # | Decision | Status |
 | --- | --- | --- |
 | [0001](0001-fail-closed.md) | Fail closed when no decision is available | accepted |
+| [0002](0002-pdp-write-token.md) | A shared bearer token protects writes to the PDP until mTLS | accepted, superseded in M5 |
